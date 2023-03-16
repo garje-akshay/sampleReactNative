@@ -25,7 +25,7 @@ const Registeration = ({ navigation }: any) => {
         "Required field is Missing ...!");
     }
     else {
-      var InsertAPIURL = "https://reqres.in/api/users?page=1";
+      var InsertAPIURL = "https://siddhiamale.000webhostapp.com/api_insert.php";
       var headers = {
         'Accept': 'application/json',
         'Content-Type': 'application.json'
@@ -38,21 +38,46 @@ const Registeration = ({ navigation }: any) => {
 
       fetch(InsertAPIURL,
         {
-          method: 'GET'
+          method: 'POST',
+          body: JSON.stringify(Data)
         }
       )
         .then((response) => response.json())
         .then((response) => {
+          //RESET STATES
+          setEmail('');
+          setPassword('')
+          setName('')
 
-          navigation.navigate('Home', { data: response.data })
-
+          console.log("response", response)
+          Alert.alert(response?.message);
         }
         )
         .catch((error) => {
+          console.log("error", error)
           Alert.alert("Error" + error);
         })
     }
   };
+
+  const handleAll = () => {
+    var GetAPIURL = "https://siddhiamale.000webhostapp.com/api_fetch_all.php";
+
+    fetch(GetAPIURL,
+      {
+        method: 'GET'
+      }
+    )
+      .then((response) => response.json())
+      .then((response) => {
+        console.log("response", response)
+        navigation.navigate('Home', { data: response })
+      }
+      )
+      .catch((error) => {
+        Alert.alert("Error" + error);
+      })
+  }
 
   return (
     <View style={styles.container}>
@@ -88,6 +113,14 @@ const Registeration = ({ navigation }: any) => {
           activeOpacity={0.8}
         >
           <Text style={styles.buttonText} >Register</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleAll}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.buttonAllText} >ALL</Text>
         </TouchableOpacity>
 
       </View>
@@ -144,11 +177,17 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 8,
   },
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
   },
+  buttonAllText: {
+
+    color: '#fff',
+    fontWeight: 'bold',
+  }
 });
 
 export default Registeration;
